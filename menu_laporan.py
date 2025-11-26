@@ -21,11 +21,9 @@ def tampil_laporan_distribusi():
         return
 
     print("\n=== Laporan Distribusi Beasiswa ===")
-    print("NISN | Kode Beasiswa | Tanggal Penerimaan")
-    print("------------------------------------------")
-
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        print(row)
+    for row in sheet.iter_rows(min_row=1, values_only=True):
+        print("{:<15} {:<20} {:<15} {:<30}".format(*row))
+        print("-" * 80)
 
 def menu_laporan():
     while True:
