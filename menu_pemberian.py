@@ -88,7 +88,7 @@ def tampil_data_pemberian():
     print("\n=== DATA PEMBERIAN BEASISWA ===")
     for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
-        print("-" * 80)
+        print("-" * 50)
         
 # MENU PEMBERIAN
 def menu_pemberian():
