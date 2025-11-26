@@ -22,8 +22,8 @@ def tampil_laporan_distribusi():
 
     print("\n=== Laporan Distribusi Beasiswa ===")
     for row in sheet.iter_rows(min_row=1, values_only=True):
-        print("{:<15} {:<20} {:<15} {:<30}".format(*row))
-        print("-" * 80)
+        print("{:<15} {:<20} {:<15}".format(*row))
+        print("-" * 50)
 
 def menu_laporan():
     while True:
