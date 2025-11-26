@@ -14,19 +14,19 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
 def load_or_create_workbook():
     """Mengembalikan workbook. Jika tidak ada, buat baru."""
     if not os.path.exists(FILE_NAME):
-        wb = openpyxl.Workbook()
+        workbook = openpyxl.Workbook()
 
         # Hapus sheet default
-        default = wb.active
-        wb.remove(default)
+        default = workbook.active
+        workbook.remove(default)
 
-        return wb
+        return workbook
     else:
         return openpyxl.load_workbook(FILE_NAME)
 
 # TAMBAH DATA SISWA
 def tambah_siswa():
-    nisn_siswa = input("Masukkan NISN Siswa: ").strip()
+    nisn_siswa = input("Masukkan NISN Siswa: ")
     if nisn_siswa == "":
         print("NISN tidak boleh kosong!")
         return
@@ -66,12 +66,10 @@ def tampil_siswa():
         print("Belum ada data siswa.")
         return
 
-    print("\n=== DAFTAR SISWA ===")
-    print("{:<15} {:<20} {:<15} {:<30}".format("NISN", "Nama", "No HP", "Alamat"))
-    print("-" * 80)
-
-    for row in sheet.iter_rows(min_row=2, values_only=True):
+    print("\n=== DAFTAR SISWA BERHAK BEASISWA ===")
+    for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15} {:<30}".format(*row))
+        print("-" * 80)
 
     workbook.close()
 
@@ -95,9 +93,9 @@ def edit_siswa():
         if row[0].value == nisn_siswa:
             print("\nData ditemukan. Kosongkan jika tidak ingin mengubah.")
 
-            nama_baru = input("Nama baru: ").strip()
-            nohp_baru = input("No HP baru: ").strip()
-            alamat_baru = input("Alamat baru: ").strip()
+            nama_baru = input("Nama baru: ")
+            nohp_baru = input("No HP baru: ")
+            alamat_baru = input("Alamat baru: ")
 
             if nama_baru: row[1].value = nama_baru
             if nohp_baru: row[2].value = nohp_baru

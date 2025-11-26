@@ -29,7 +29,7 @@ def tampil_laporan_distribusi():
 
 def menu_laporan():
     while True:
-        print("\nMenu Laporan:")
+        print("\n === MENU LAPORAN ===")
         print("1. Laporan Distribusi Beasiswa")
         print("2. Kembali ke Menu Utama")
 

@@ -4,7 +4,6 @@ from datetime import datetime
 
 FILE_NAME = 'data_beasiswa.xlsx'
 
-# BANTUAN
 def create_sheet_if_not_exists(workbook, sheet_name, header=None):
     if sheet_name not in workbook.sheetnames:
         sheet = workbook.create_sheet(sheet_name)
