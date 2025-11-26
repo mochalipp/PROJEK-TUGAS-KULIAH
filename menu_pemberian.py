@@ -20,14 +20,14 @@ def pemberian_beasiswa():
         print("File data tidak ditemukan.")
         return
 
-    wb = openpyxl.load_workbook(FILE_NAME)
+    workbook = openpyxl.load_workbook(FILE_NAME)
 
-    if 'Siswa' not in wb.sheetnames or 'Beasiswa' not in wb.sheetnames:
+    if 'Siswa' not in workbook.sheetnames or 'Beasiswa' not in workbook.sheetnames:
         print("Data siswa atau beasiswa tidak ada.")
         return
 
-    siswa_sheet = wb['Siswa']
-    bea_sheet = wb['Beasiswa']
+    siswa_sheet = workbook['Siswa']
+    bea_sheet = workbook['Beasiswa']
 
     # Validasi siswa
     siswa_valid = any(row[0].value == nisn for row in siswa_sheet.iter_rows(min_row=2))
@@ -54,7 +54,7 @@ def pemberian_beasiswa():
 
     # Simpan ke sheet pemberian
     pemberian_sheet = create_sheet_if_not_exists(
-        wb, 'Pemberian', ['NISN', 'Kode Beasiswa', 'Tanggal']
+        workbook, 'Pemberian', ['NISN', 'Kode Beasiswa', 'Tanggal']
     )
     pemberian_sheet.append([nisn, kode, tanggal])
 
@@ -68,7 +68,7 @@ def pemberian_beasiswa():
     else:
         bea_row[6].value = "Tersedia"
 
-    wb.save(FILE_NAME)
+    workbook.save(FILE_NAME)
     print("Beasiswa berhasil diberikan!")
 
 # TAMPIL PEMBERIAN
@@ -77,18 +77,19 @@ def tampil_data_pemberian():
         print("File tidak ditemukan.")
         return
 
-    wb = openpyxl.load_workbook(FILE_NAME)
+    workbook = openpyxl.load_workbook(FILE_NAME)
 
-    if 'Pemberian' not in wb.sheetnames:
+    if 'Pemberian' not in workbook.sheetnames:
         print("Belum ada pemberian.")
         return
 
-    sheet = wb['Pemberian']
+    sheet = workbook['Pemberian']
 
     print("\n=== DATA PEMBERIAN BEASISWA ===")
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        print(row)
-
+    for row in sheet.iter_rows(min_row=1, values_only=True):
+        print("{:<15} {:<20} {:<15} {:<30}".format(*row))
+        print("-" * 80)
+        
 # MENU PEMBERIAN
 def menu_pemberian():
     while True:
