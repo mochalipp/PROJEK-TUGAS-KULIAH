@@ -13,10 +13,10 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
 
 def load_or_create_workbook():
     if not os.path.exists(FILE_NAME):
-        wb = openpyxl.Workbook()
-        default = wb.active
-        wb.remove(default)
-        return wb
+        workbook = openpyxl.Workbook()
+        default = workbook.active
+        workbook.remove(default)
+        return workbook
     else:
         return openpyxl.load_workbook(FILE_NAME)
 
@@ -43,7 +43,7 @@ def tambah_beasiswa():
     print("B03 = Beasiswa Perguruan Tinggi")
     print("Contoh Kode lengkap: B01001 (B01 = Jenis, 001 = Nomor)\n")
 
-    kode = input("Masukkan Kode Beasiswa (B01xxx): ").strip()
+    kode = input("Masukkan Kode Beasiswa (B01xxx): ")
     jenis_code, nomor_code = memisahkan_string(kode)
     if jenis_code is None:
         return
@@ -80,20 +80,21 @@ def tampil_beasiswa():
         print("File data tidak ditemukan.")
         return
 
-    wb = openpyxl.load_workbook(FILE_NAME)
-    if 'Beasiswa' not in wb.sheetnames:
+    workbook = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in workbook.sheetnames:
         print("Sheet Beasiswa belum ada.")
         return
 
-    sheet = wb['Beasiswa']
+    sheet = workbook['Beasiswa']
     if sheet.max_row == 1:
         print("Belum ada data.")
         return
 
     print("\n=== DAFTAR BEASISWA ===")
-    for r in sheet.iter_rows(min_row=2, values_only=True):
-        print(r)
-
+    for row in sheet.iter_rows(min_row=1, values_only=True):
+        print("{:<15} {:<20} {:<15} {:<30}".format(*row))
+        print("-" * 80)
+        
 # EDIT BEASISWA
 def edit_beasiswa():
     kode = input("Masukkan kode beasiswa yang ingin diedit: ")
@@ -102,18 +103,18 @@ def edit_beasiswa():
         print("File tidak ditemukan.")
         return
 
-    wb = openpyxl.load_workbook(FILE_NAME)
-    if 'Beasiswa' not in wb.sheetnames:
+    workbook = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in workbook.sheetnames:
         print("Sheet tidak ada.")
         return
 
-    sheet = wb['Beasiswa']
+    sheet = workbook['Beasiswa']
     for row in sheet.iter_rows(min_row=2):
         if row[0].value == kode:
             print("Data ditemukan. Kosongkan jika tidak ingin mengubah.")
-            nama = input("Nama baru: ").strip()
-            pemberi = input("Pemberi baru: ").strip()
-            kuota = input("Kuota baru: ").strip()
+            nama = input("Nama baru: ")
+            pemberi = input("Pemberi baru: ")
+            kuota = input("Kuota baru: ")
 
             if nama:
                 row[1].value = nama
@@ -122,7 +123,7 @@ def edit_beasiswa():
             if kuota.isdigit():
                 row[5].value = kuota
 
-            wb.save(FILE_NAME)
+            workbook.save(FILE_NAME)
             print("Beasiswa berhasil diedit.")
             return
 
@@ -136,19 +137,19 @@ def hapus_beasiswa():
         print("File tidak ditemukan.")
         return
 
-    wb = openpyxl.load_workbook(FILE_NAME)
-    if 'Beasiswa' not in wb.sheetnames:
+    workbook = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in workbook.sheetnames:
         print("Sheet tidak ada.")
         return
 
-    sheet = wb['Beasiswa']
+    sheet = workbook['Beasiswa']
 
     for idx, row in enumerate(sheet.iter_rows(min_row=2), start=2):
         if row[0].value == kode:
             konfirm = input("Yakin hapus? (y/n): ").lower()
             if konfirm == 'y':
                 sheet.delete_rows(idx)
-                wb.save(FILE_NAME)
+                workbook.save(FILE_NAME)
                 print("Beasiswa berhasil dihapus.")
             else:
                 print("Dibatalkan.")
@@ -179,4 +180,4 @@ def menu_beasiswa():
         elif pilihan == '5': 
             break
         else : 
-            print("Pilihan tidak valid!")
+            print("Pilihan tidak valid.")

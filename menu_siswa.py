@@ -30,6 +30,10 @@ def tambah_siswa():
     if nisn_siswa == "":
         print("NISN tidak boleh kosong!")
         return
+    
+    if not nisn_siswa.isdigit():
+        print("NISN harus angka!")
+        return
 
     nama_siswa = input("Masukkan Nama Siswa: ")
     no_hp = input("Masukkan No. HP Siswa: ")
