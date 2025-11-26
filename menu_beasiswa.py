@@ -1,0 +1,183 @@
+import openpyxl
+import os
+from datetime import datetime
+
+FILE_NAME = 'data_beasiswa.xlsx'
+
+# BANTUAN
+def create_sheet_if_not_exists(workbook, sheet_name, header=None):
+    if sheet_name not in workbook.sheetnames:
+        sheet = workbook.create_sheet(sheet_name)
+        if header:
+            sheet.append(header)
+    return workbook[sheet_name]
+
+def load_or_create_workbook():
+    if not os.path.exists(FILE_NAME):
+        wb = openpyxl.Workbook()
+        default = wb.active
+        wb.remove(default)
+        return wb
+    else:
+        return openpyxl.load_workbook(FILE_NAME)
+
+# VALIDASI KODE BEASISWA
+def memisahkan_string(kode):
+    if len(kode) != 6:
+        print("Kode harus 6 karakter, contoh: B01001")
+        return None, None
+    return kode[0:3], kode[3:6]
+
+def tentukan_jenis_beasiswa(jenis_beasiswa):
+    jenis_map = {
+        "B01": "Beasiswa Pemerintah",
+        "B02": "Beasiswa Swasta",
+        "B03": "Beasiswa Perguruan Tinggi"
+    }
+    return jenis_map.get(jenis_beasiswa, "Jenis beasiswa tidak dikenal")
+
+# FITUR TAMBAH BEASISWA
+def tambah_beasiswa():
+    print("\n=== DAFTAR JENIS BEASISWA ===")
+    print("B01 = Beasiswa Pemerintah")
+    print("B02 = Beasiswa Swasta")
+    print("B03 = Beasiswa Perguruan Tinggi")
+    print("Contoh Kode lengkap: B01001 (B01 = Jenis, 001 = Nomor)\n")
+
+    kode = input("Masukkan Kode Beasiswa (B01xxx): ").strip()
+    jenis_code, nomor_code = memisahkan_string(kode)
+    if jenis_code is None:
+        return
+
+    nama = input("Masukkan Nama Beasiswa: ")
+    pemberi = input("Masukkan Pemberi Beasiswa: ")
+    kuota = input("Masukkan Kuota Beasiswa: ")
+
+    if not kuota.isdigit():
+        print("Kuota harus angka!")
+        return
+
+    workbook = load_or_create_workbook()
+    sheet = create_sheet_if_not_exists(
+        workbook,
+        'Beasiswa',
+        ['Kode', 'Nama', 'Pemberi', 'Jenis', 'Nomor', 'Kuota', 'Status']
+    )
+
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row[0] == kode:
+            print("Kode sudah terdaftar!")
+            return
+
+    jenis_nama = tentukan_jenis_beasiswa(jenis_code)
+
+    sheet.append([kode, nama, pemberi, jenis_nama, nomor_code, kuota, 'Tersedia'])
+    workbook.save(FILE_NAME)
+    print("Beasiswa berhasil ditambahkan.")
+
+# TAMPIL BEASISWA
+def tampil_beasiswa():
+    if not os.path.exists(FILE_NAME):
+        print("File data tidak ditemukan.")
+        return
+
+    wb = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in wb.sheetnames:
+        print("Sheet Beasiswa belum ada.")
+        return
+
+    sheet = wb['Beasiswa']
+    if sheet.max_row == 1:
+        print("Belum ada data.")
+        return
+
+    print("\n=== DAFTAR BEASISWA ===")
+    for r in sheet.iter_rows(min_row=2, values_only=True):
+        print(r)
+
+# EDIT BEASISWA
+def edit_beasiswa():
+    kode = input("Masukkan kode beasiswa yang ingin diedit: ")
+
+    if not os.path.exists(FILE_NAME):
+        print("File tidak ditemukan.")
+        return
+
+    wb = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in wb.sheetnames:
+        print("Sheet tidak ada.")
+        return
+
+    sheet = wb['Beasiswa']
+    for row in sheet.iter_rows(min_row=2):
+        if row[0].value == kode:
+            print("Data ditemukan. Kosongkan jika tidak ingin mengubah.")
+            nama = input("Nama baru: ").strip()
+            pemberi = input("Pemberi baru: ").strip()
+            kuota = input("Kuota baru: ").strip()
+
+            if nama:
+                row[1].value = nama
+            if pemberi:
+                row[2].value = pemberi
+            if kuota.isdigit():
+                row[5].value = kuota
+
+            wb.save(FILE_NAME)
+            print("Beasiswa berhasil diedit.")
+            return
+
+    print("Beasiswa tidak ditemukan.")
+
+# HAPUS BEASISWA
+def hapus_beasiswa():
+    kode = input("Masukkan kode beasiswa yang ingin dihapus: ")
+
+    if not os.path.exists(FILE_NAME):
+        print("File tidak ditemukan.")
+        return
+
+    wb = openpyxl.load_workbook(FILE_NAME)
+    if 'Beasiswa' not in wb.sheetnames:
+        print("Sheet tidak ada.")
+        return
+
+    sheet = wb['Beasiswa']
+
+    for idx, row in enumerate(sheet.iter_rows(min_row=2), start=2):
+        if row[0].value == kode:
+            konfirm = input("Yakin hapus? (y/n): ").lower()
+            if konfirm == 'y':
+                sheet.delete_rows(idx)
+                wb.save(FILE_NAME)
+                print("Beasiswa berhasil dihapus.")
+            else:
+                print("Dibatalkan.")
+            return
+
+    print("Kode tidak ditemukan.")
+
+# MENU UTAMA
+def menu_beasiswa():
+    while True:
+        print("\n=== MENU BEASISWA ===")
+        print("1. Tambah Beasiswa")
+        print("2. Tampil Beasiswa")
+        print("3. Edit Beasiswa")
+        print("4. Hapus Beasiswa")
+        print("5. Kembali ke Menu Utama")
+
+        pilihan = input("Pilih menu: ")
+
+        if pilihan == '1': 
+            tambah_beasiswa()
+        elif pilihan == '2': 
+            tampil_beasiswa()
+        elif pilihan == '3': 
+            edit_beasiswa()
+        elif pilihan == '4': 
+            hapus_beasiswa()
+        elif pilihan == '5': 
+            break
+        else : 
+            print("Pilihan tidak valid!")
