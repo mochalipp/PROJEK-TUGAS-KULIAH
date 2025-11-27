@@ -1,4 +1,4 @@
-import openpyxl
+import openpyxl 
 import os
 
 FILE_NAME = 'data_beasiswa.xlsx'

@@ -1,4 +1,4 @@
-import openpyxl
+import openpyxl 
 import os
 
 FILE_NAME = 'data_beasiswa.xlsx'
@@ -36,7 +36,7 @@ def tambah_siswa():
         return
 
     nama_siswa = input("Masukkan Nama Siswa: ")
-    no_hp = input("Masukkan No. HP Siswa: ")
+    no_hp = input("Masukkan No. HP Siswa +62:  ")
     alamat = input("Masukkan Alamat Siswa: ")
 
     workbook = load_or_create_workbook()
@@ -99,7 +99,7 @@ def edit_siswa():
             print("\nData ditemukan. Kosongkan jika tidak ingin mengubah.")
 
             nama_baru = input("Nama baru: ")
-            nohp_baru = input("No HP baru: ")
+            nohp_baru = input("No HP baru +62 : ")
             alamat_baru = input("Alamat baru: ")
 
             if nama_baru: row[1].value = nama_baru
