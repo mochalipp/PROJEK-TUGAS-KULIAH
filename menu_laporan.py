@@ -11,7 +11,7 @@ def get_nama_siswa(workbook, nisn):
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == nisn:
             return row[1]
-    return "-"
+    return "Nama Siswa"
 
 # fungsi mendapatkan nama beasiswa berdasarkan kode
 def get_nama_beasiswa(workbook, kode):
@@ -21,7 +21,7 @@ def get_nama_beasiswa(workbook, kode):
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == kode:
             return row[1]
-    return "-"
+    return "Nama Beasiswa"
 
 # LAPORAN DISTRIBUSI BEASISWA
 def tampil_laporan_distribusi():
