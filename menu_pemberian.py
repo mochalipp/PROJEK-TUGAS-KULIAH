@@ -146,6 +146,7 @@ def tampil_data_pemberian():
     sheet = workbook['Pemberian']
 
     print("\n=== DATA PEMBERIAN BEASISWA ===")
+    print("-" * 50)
     for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
         print("-" * 50)
@@ -165,9 +166,10 @@ def tampil_history_pencabutan():
     sheet = workbook['Histori_Pencabutan']
 
     print("\n=== HISTORI PENCABUTAN BEASISWA ===")
+    print("-" * 60)
     for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
-        print("-" * 50)
+        print("-" * 60)
 
 #   MENU PEMBERIAN
 def menu_pemberian():

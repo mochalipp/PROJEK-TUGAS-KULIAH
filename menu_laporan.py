@@ -42,7 +42,6 @@ def tampil_laporan_distribusi():
         return
 
     print("\n=== LAPORAN DISTRIBUSI BEASISWA ===")
-    print("{:<15} {:<20} {:<20} {:<15}".format("NISN", "Nama Siswa", "Nama Beasiswa", "Tanggal"))
     print("-" * 70)
 
     for nisn, kode, tanggal in sheet.iter_rows(min_row=2, values_only=True):
@@ -50,7 +49,8 @@ def tampil_laporan_distribusi():
         nama_bea = get_nama_beasiswa(workbook, kode)
 
         print("{:<15} {:<20} {:<20} {:<15}".format(nisn, nama_siswa, nama_bea, tanggal))
-
+        print("-" * 70)
+        
 # MENU LAPORAN
 def menu_laporan():
     while True:

@@ -71,6 +71,7 @@ def tampil_siswa():
         return
 
     print("\n=== DAFTAR SISWA BERHAK BEASISWA ===")
+    print("-" * 80)
     for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15} {:<30}".format(*row))
         print("-" * 80)
