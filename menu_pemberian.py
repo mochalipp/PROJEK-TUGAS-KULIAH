@@ -11,6 +11,7 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
             sheet.append(header)
     return workbook[sheet_name]
 
+#   PEMBERIAN BEASISWA
 def pemberian_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
@@ -52,26 +53,85 @@ def pemberian_beasiswa():
         print("Kuota beasiswa HABIS!")
         return
 
-    # Simpan ke sheet pemberian
+    # CEK DUPLIKASI
     pemberian_sheet = create_sheet_if_not_exists(
         workbook, 'Pemberian', ['NISN', 'Kode Beasiswa', 'Tanggal']
     )
+
+    for row in pemberian_sheet.iter_rows(min_row=2, values_only=True):
+        if row[0] == nisn and row[1] == kode:
+            print("GAGAL: Siswa sudah pernah menerima beasiswa ini!")
+            return
+
+    # Simpan pemberian
     pemberian_sheet.append([nisn, kode, tanggal])
 
-    # Kurangi kuota
+    # Kurangi kuota dan update status
     kuota -= 1
     bea_row[5].value = kuota
-
-    # Update status jika kuota habis
-    if kuota == 0:
-        bea_row[6].value = "Habis"
-    else:
-        bea_row[6].value = "Tersedia"
+    bea_row[6].value = "Habis" if kuota == 0 else "Tersedia"
 
     workbook.save(FILE_NAME)
     print("Beasiswa berhasil diberikan!")
 
-# TAMPIL PEMBERIAN
+#   PENCABUTAN BEASISWA
+def pencabutan_beasiswa():
+    nisn = input("Masukkan NISN Siswa yang dicabut: ")
+    kode = input("Masukkan Kode Beasiswa yang dicabut: ")
+
+    if not os.path.exists(FILE_NAME):
+        print("File data tidak ditemukan.")
+        return
+
+    workbook = openpyxl.load_workbook(FILE_NAME)
+
+    if 'Pemberian' not in workbook.sheetnames:
+        print("Belum ada data pemberian.")
+        return
+    if 'Beasiswa' not in workbook.sheetnames:
+        print("Data beasiswa tidak ditemukan.")
+        return
+
+    pemberian_sheet = workbook['Pemberian']
+    bea_sheet = workbook['Beasiswa']
+
+    # Cari data pemberian
+    target_row = None
+    for row in pemberian_sheet.iter_rows(min_row=2):
+        if row[0].value == nisn and row[1].value == kode:
+            target_row = row
+            break
+
+    if target_row is None:
+        print("Data pemberian tidak ditemukan.")
+        return
+
+    # Hapus baris pemberian
+    row_number = target_row[0].row
+    pemberian_sheet.delete_rows(row_number)
+
+    # Kembalikan kuota
+    for row in bea_sheet.iter_rows(min_row=2):
+        if row[0].value == kode:
+            kuota = int(row[5].value)
+            kuota += 1
+            row[5].value = kuota
+            row[6].value = "Tersedia"
+            break
+
+    # CATAT KE HISTORI
+    histori_sheet = create_sheet_if_not_exists(
+        workbook,
+        'Histori_Pencabutan',
+        ['NISN', 'Kode Beasiswa', 'Tanggal Pencabutan']
+    )
+
+    histori_sheet.append([nisn, kode, datetime.today().strftime("%Y-%m-%d")])
+
+    workbook.save(FILE_NAME)
+    print("Pencabutan beasiswa berhasil dicatat!")
+
+#   TAMPIL DATA PEMBERIAN
 def tampil_data_pemberian():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -89,22 +149,47 @@ def tampil_data_pemberian():
     for row in sheet.iter_rows(min_row=1, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
         print("-" * 50)
-        
-# MENU PEMBERIAN
+
+#   TAMPIL HISTORI PENCABUTAN
+def tampil_history_pencabutan():
+    if not os.path.exists(FILE_NAME):
+        print("File tidak ditemukan.")
+        return
+
+    workbook = openpyxl.load_workbook(FILE_NAME)
+
+    if 'Histori_Pencabutan' not in workbook.sheetnames:
+        print("Belum ada histori pencabutan.")
+        return
+
+    sheet = workbook['Histori_Pencabutan']
+
+    print("\n=== HISTORI PENCABUTAN BEASISWA ===")
+    for row in sheet.iter_rows(min_row=1, values_only=True):
+        print("{:<15} {:<20} {:<15}".format(*row))
+        print("-" * 50)
+
+#   MENU PEMBERIAN
 def menu_pemberian():
     while True:
         print("\n=== MENU PEMBERIAN BEASISWA ===")
         print("1. Tambahkan Pemberian Beasiswa")
         print("2. Tampilkan Pemberian Beasiswa")
-        print("3. Kembali ke Menu Utama")
+        print("3. Cabut Pemberian Beasiswa")
+        print("4. Tampilkan History Pencabutan")
+        print("5. Kembali ke Menu Utama")
 
         pilihan = input("Pilih menu: ")
 
-        if pilihan == '1': 
+        if pilihan == '1':
             pemberian_beasiswa()
-        elif pilihan == '2': 
+        elif pilihan == '2':
             tampil_data_pemberian()
-        elif pilihan == '3': 
+        elif pilihan == '3':
+            pencabutan_beasiswa()
+        elif pilihan == '4':
+            tampil_history_pencabutan()
+        elif pilihan == '5':
             break
-        else: 
+        else:
             print("Pilihan tidak valid!")
