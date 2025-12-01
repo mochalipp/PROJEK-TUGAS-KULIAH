@@ -6,7 +6,8 @@ from menu_laporan import menu_laporan
 # Menu utama
 def menu_utama():
     while True:
-        print("\n=== MENU UTAMA SISTEM PEMBERIAN BEASISWA ===")
+        print("\n=== MENU " \
+        "UTAMA SISTEM PEMBERIAN BEASISWA ===")
         print("1. Data Siswa Berhak Beasiswa")
         print("2. Jenis Beasiswa")
         print("3. Pemberian Beasiswa")

@@ -1,9 +1,9 @@
 import openpyxl 
 import os
 
-FILE_NAME = 'data_beasiswa.xlsx'
+FILE_NAME = 'data_beasiswa.xlsx' # cek apakah file sudah ada
 
-def create_sheet_if_not_exists(workbook, sheet_name, header=None):
+def create_sheet_if_not_exists(workbook, sheet_name, header=None): # fungsi membuat sheet
     """Membuat sheet jika belum ada dan menambahkan header bila diberikan."""
     if sheet_name not in workbook.sheetnames:
         sheet = workbook.create_sheet(sheet_name)
