@@ -34,7 +34,7 @@ def tampil_laporan_distribusi():
     if 'Pemberian' not in workbook.sheetnames:
         print("Belum ada data pemberian beasiswa.")
         return
-
+    
     sheet = workbook['Pemberian']
 
     if sheet.max_row == 1:

@@ -11,12 +11,12 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
             sheet.append(header)
     return workbook[sheet_name]
 
-#   PEMBERIAN BEASISWA
+#   PEMBERIAN BEASISWA 
 def pemberian_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
     tanggal = datetime.today().strftime("%Y-%m-%d")
-
+    # Validasi data 
     if not os.path.exists(FILE_NAME):
         print("File data tidak ditemukan.")
         return

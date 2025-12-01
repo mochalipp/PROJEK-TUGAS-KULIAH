@@ -63,7 +63,7 @@ def tampil_siswa():
     if 'Siswa' not in workbook.sheetnames:
         print("Sheet Siswa belum ada.")
         return
-
+    # ambil sheet Siswa
     sheet = workbook['Siswa']
 
     if sheet.max_row == 1:
@@ -93,7 +93,7 @@ def edit_siswa():
         return
 
     sheet = workbook['Siswa']
-
+    # cari data siswa berdasarkan NISN
     for row in sheet.iter_rows(min_row=2):
         if row[0].value == nisn_siswa:
             print("\nData ditemukan. Kosongkan jika tidak ingin mengubah.")
@@ -109,31 +109,31 @@ def edit_siswa():
             workbook.save(FILE_NAME)
             print("Data Siswa berhasil diedit.")
             return
-
+    # jika data tidak ditemukan maka tampilkan pesan
     print("Data Siswa tidak ditemukan.")
 
 # HAPUS DATA SISWA
 def hapus_siswa():
     nisn_siswa = input("Masukkan NISN Siswa yang ingin dihapus: ")
-
+    # cek apakah file ada
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
         return
-
+    # load workbook untuk menghapus data
     workbook = openpyxl.load_workbook(FILE_NAME)
-
+    # cek apakah sheet Siswa ada atau tidak
     if 'Siswa' not in workbook.sheetnames:
         print("Sheet Siswa belum ada.")
-        return
+        return # Kemabalikan nilai jika sheet tidak ada
 
     sheet = workbook['Siswa']
-
+    # cari data siswa berdasarkan NISN
     for row_index, row in enumerate(sheet.iter_rows(min_row=2), start=2):
         if row[0].value == nisn_siswa:
-
+        # jika data ditemukan, minta konfirmasi penghapusan
             konfirmasi = input("Yakin ingin hapus data? (y/n): ").lower()
             if konfirmasi != "y":
-                print("Penghapusan dibatalkan.")
+                print("Penghapusan dibatalkan.") # batal jika tidak konfirmasi
                 return
 
             sheet.delete_rows(row_index)
@@ -152,9 +152,9 @@ def menu_siswa():
         print("3. Edit Data Siswa")
         print("4. Hapus Data Siswa")
         print("5. Kembali ke Menu Utama")
-
+    # mengambil input dari pengguna
         pilihan = input("Pilih menu: ")
-
+    # mengarahkan ke menu sesuai pilihan pengguna
         if pilihan == '1':
             tambah_siswa()
         elif pilihan == '2':

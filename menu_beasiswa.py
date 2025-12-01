@@ -13,6 +13,7 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
             sheet.append(header) # tambahkan header jika ada
     return workbook[sheet_name] # kembalikan sheet
 
+# MEMUAT ATAU MEMBUAT WORKBOOK BARU
 def load_or_create_workbook():
     if not os.path.exists(FILE_NAME):
         workbook = openpyxl.Workbook()
@@ -28,7 +29,7 @@ def memisahkan_string(kode):
         print("Kode harus 6 karakter, contoh: B01001")
         return None, None # mengembalikan None jika tidak valid
     return kode[0:3], kode[3:6]
-
+# MENENTUKAN JENIS BEASISWA
 def tentukan_jenis_beasiswa(jenis_beasiswa):
     # Daftar jenis beasiswa
     jenis_map = {
@@ -163,6 +164,8 @@ def hapus_beasiswa():
 
     print("Kode tidak ditemukan.")
 
+
+#////////////////////////////////////// END FUCTIONS //////////////////////////////////////#
 # MENU UTAMA
 def menu_beasiswa():
     while True:
