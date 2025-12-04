@@ -4,18 +4,19 @@ from menu_pemberian import menu_pemberian
 from menu_laporan import menu_laporan
 
 # Menu utama
-def menu_utama(): # fungsi untuk menampilkan menu utama
-    while True: # loop untuk menampilkan menu utama secara terus-menerus
-        print("\n=== MENU " \
-        "UTAMA SISTEM PEMBERIAN BEASISWA ===")
-        print("1. Data Siswa Berhak Beasiswa")
-        print("2. Jenis Beasiswa")
-        print("3. Pemberian Beasiswa")
-        print("4. Laporan Beasiswa")
+def menu_utama():  # fungsi untuk menampilkan menu utama
+    while True:  # loop agar menu terus tampil
+        print("\n=== MENU UTAMA SISTEM PEMBERIAN BEASISWA ===")
+        print("1. Menu Siswa Berhak Beasiswa")
+        print("2. Menu Beasiswa")
+        print("3. Menu Pemberian Beasiswa")
+        print("4. Menu Laporan Beasiswa")
         print("5. Keluar")
-    # mengambil input dari pengguna
+
+        # mengambil input dari pengg1una
         pilihan = input("Pilih menu (1-5): ")
-    # mengarahkan ke menu sesuai pilihan pengguna
+
+        # mengarahkan ke menu sesuai pilihan pengguna
         if pilihan == '1':
             menu_siswa()
         elif pilihan == '2':

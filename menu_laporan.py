@@ -11,9 +11,9 @@ def get_nama_siswa(workbook, nisn):
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == nisn:
             return row[1]
-    return "Nama Siswa"
+    return "-"  # jika tidak ditemukan
 
-# fungsi mendapatkan nama beasiswa berdasarkan kode
+# Fungsi mendapatkan nama beasiswa berdasarkan kode
 def get_nama_beasiswa(workbook, kode):
     if 'Beasiswa' not in workbook.sheetnames:
         return "-"
@@ -21,7 +21,7 @@ def get_nama_beasiswa(workbook, kode):
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == kode:
             return row[1]
-    return "Nama Beasiswa"
+    return "-"  # jika tidak ditemukan
 
 # LAPORAN DISTRIBUSI BEASISWA
 def tampil_laporan_distribusi():
@@ -37,24 +37,23 @@ def tampil_laporan_distribusi():
     
     sheet = workbook['Pemberian']
 
-    if sheet.max_row == 1:
+    if sheet.max_row <= 1:
         print("Belum ada data distribusi beasiswa.")
         return
 
     print("\n=== LAPORAN DISTRIBUSI BEASISWA ===")
-    print("-" * 70)
+    print("{:<15} {:<20} {:<20} {:<15}".format("NISN", "Nama Siswa", "Nama Beasiswa", "Tanggal"))
 
-    for nisn, kode, tanggal in sheet.iter_rows(min_row=1, values_only=True):
+    for nisn, kode, tanggal in sheet.iter_rows(min_row=2, values_only=True):
         nama_siswa = get_nama_siswa(workbook, nisn)
         nama_bea = get_nama_beasiswa(workbook, kode)
 
         print("{:<15} {:<20} {:<20} {:<15}".format(nisn, nama_siswa, nama_bea, tanggal))
-        print("-" * 70)
 
 # MENU LAPORAN
 def menu_laporan():
     while True:
-        print("\n === MENU LAPORAN ===")
+        print("\n=== MENU LAPORAN ===")
         print("1. Laporan Distribusi Beasiswa")
         print("2. Kembali ke Menu Utama")
 

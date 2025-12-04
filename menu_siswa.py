@@ -1,10 +1,9 @@
 import openpyxl 
 import os
 
-FILE_NAME = 'data_beasiswa.xlsx' # cek apakah file sudah ada
+FILE_NAME = 'data_beasiswa.xlsx'
 
-def create_sheet_if_not_exists(workbook, sheet_name, header=None): # fungsi membuat sheet
-    """Membuat sheet jika belum ada dan menambahkan header bila diberikan."""
+def create_sheet_if_not_exists(workbook, sheet_name, header=None):
     if sheet_name not in workbook.sheetnames:
         sheet = workbook.create_sheet(sheet_name)
         if header:
@@ -12,37 +11,35 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None): # fungsi memb
     return workbook[sheet_name]
 
 def load_or_create_workbook():
-    """Mengembalikan workbook. Jika tidak ada, buat baru."""
     if not os.path.exists(FILE_NAME):
         workbook = openpyxl.Workbook()
-
-        # Hapus sheet default
         default = workbook.active
         workbook.remove(default)
-
+        workbook.save(FILE_NAME)
         return workbook
     else:
         return openpyxl.load_workbook(FILE_NAME)
 
-# TAMBAH DATA SISWA
+# Fungsi TAMBAH SISWA 
 def tambah_siswa():
     nisn_siswa = input("Masukkan NISN Siswa: ")
-    if nisn_siswa == "":
-        print("NISN tidak boleh kosong!")
-        return
     
     if not nisn_siswa.isdigit():
         print("NISN harus angka!")
         return
 
     nama_siswa = input("Masukkan Nama Siswa: ")
-    no_hp = input("Masukkan No. HP Siswa +62:  ")
+    no_hp = input("Masukkan No. HP Siswa:  ")
     alamat = input("Masukkan Alamat Siswa: ")
 
     workbook = load_or_create_workbook()
-    sheet = create_sheet_if_not_exists(workbook, 'Siswa', ['NISN', 'Nama Siswa', 'No HP', 'Alamat'])
+    sheet = create_sheet_if_not_exists(
+        workbook, 
+        'Siswa', 
+        ['NISN','Nama Siswa','No HP','Alamat']
+    )
 
-    # Cek duplikasi NISN
+    # Cek duplikasi
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == nisn_siswa:
             print("GAGAL! NISN sudah terdaftar!")
@@ -52,18 +49,17 @@ def tambah_siswa():
     workbook.save(FILE_NAME)
     print("Data Siswa berhasil ditambahkan.")
 
-# TAMPIL DATA SISWA
+# Fungsi TAMPIL SISWA 
 def tampil_siswa():
     if not os.path.exists(FILE_NAME):
         print("File data siswa tidak ditemukan.")
         return
 
     workbook = openpyxl.load_workbook(FILE_NAME)
-
     if 'Siswa' not in workbook.sheetnames:
         print("Sheet Siswa belum ada.")
         return
-    # ambil sheet Siswa
+
     sheet = workbook['Siswa']
 
     if sheet.max_row == 1:
@@ -71,14 +67,12 @@ def tampil_siswa():
         return
 
     print("\n=== DAFTAR SISWA BERHAK BEASISWA ===")
-    print("-" * 80)
-    for row in sheet.iter_rows(min_row=1, values_only=True):
+    print("{:<15} {:<20} {:<15} {:<30}".format("NISN","Nama","No HP","Alamat"))
+
+    for row in sheet.iter_rows(min_row=2, values_only=True):
         print("{:<15} {:<20} {:<15} {:<30}".format(*row))
-        print("-" * 80)
 
-    workbook.close()
-
-# EDIT DATA SISWA
+# Fungsi EDIT SISWA
 def edit_siswa():
     nisn_siswa = input("Masukkan NISN Siswa yang ingin diedit: ")
 
@@ -87,19 +81,18 @@ def edit_siswa():
         return
 
     workbook = openpyxl.load_workbook(FILE_NAME)
-
     if 'Siswa' not in workbook.sheetnames:
         print("Sheet Siswa belum ada.")
         return
 
     sheet = workbook['Siswa']
-    # cari data siswa berdasarkan NISN
+
     for row in sheet.iter_rows(min_row=2):
         if row[0].value == nisn_siswa:
             print("\nData ditemukan. Kosongkan jika tidak ingin mengubah.")
 
             nama_baru = input("Nama baru: ")
-            nohp_baru = input("No HP baru +62 : ")
+            nohp_baru = input("No HP baru : ")
             alamat_baru = input("Alamat baru: ")
 
             if nama_baru: row[1].value = nama_baru
@@ -109,31 +102,29 @@ def edit_siswa():
             workbook.save(FILE_NAME)
             print("Data Siswa berhasil diedit.")
             return
-    # jika data tidak ditemukan maka tampilkan pesan
-    print("Data Siswa tidak ditemukan.")
 
-# HAPUS DATA SISWA
+    print("Data tidak ditemukan.")
+
+# Fungsi HAPUS SISWA
 def hapus_siswa():
     nisn_siswa = input("Masukkan NISN Siswa yang ingin dihapus: ")
-    # cek apakah file ada
+
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
         return
-    # load workbook untuk menghapus data
+
     workbook = openpyxl.load_workbook(FILE_NAME)
-    # cek apakah sheet Siswa ada atau tidak
     if 'Siswa' not in workbook.sheetnames:
         print("Sheet Siswa belum ada.")
-        return # Kemabalikan nilai jika sheet tidak ada
+        return
 
     sheet = workbook['Siswa']
-    # cari data siswa berdasarkan NISN
+
     for row_index, row in enumerate(sheet.iter_rows(min_row=2), start=2):
         if row[0].value == nisn_siswa:
-        # jika data ditemukan, minta konfirmasi penghapusan
             konfirmasi = input("Yakin ingin hapus data? (y/n): ").lower()
             if konfirmasi != "y":
-                print("Penghapusan dibatalkan.") # batal jika tidak konfirmasi
+                print("Penghapusan dibatalkan.")
                 return
 
             sheet.delete_rows(row_index)
@@ -152,9 +143,9 @@ def menu_siswa():
         print("3. Edit Data Siswa")
         print("4. Hapus Data Siswa")
         print("5. Kembali ke Menu Utama")
-    # mengambil input dari pengguna
+
         pilihan = input("Pilih menu: ")
-    # mengarahkan ke menu sesuai pilihan pengguna
+
         if pilihan == '1':
             tambah_siswa()
         elif pilihan == '2':
