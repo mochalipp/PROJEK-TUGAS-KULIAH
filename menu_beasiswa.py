@@ -107,10 +107,10 @@ def tampil_beasiswa():
 
     print("\n=== DAFTAR BEASISWA ===")
     header = ["Kode", "Nama", "Pemberi", "Jenis", "Nomor", "Kuota", "Status"]
-    print("{:<10} {:<25} {:<20} {:<25} {:<8} {:<8} {:<10}".format(*header))
+    print("{:<10} {:<25} {:<20} {:<30} {:<8} {:<8} {:<10}".format(*header))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        print("{:<10} {:<25} {:<20} {:<25} {:<8} {:<8} {:<10}".format(*row))
+        print("{:<10} {:<25} {:<20} {:<30} {:<8} {:<8} {:<10}".format(*row))
 
 # Fungsi EDIT BEASISWA
 def edit_beasiswa():

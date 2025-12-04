@@ -11,9 +11,7 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
             sheet.append(header)
     return workbook[sheet_name]
 
-# =============================
 #   PEMBERIAN BEASISWA
-# =============================
 def pemberian_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
@@ -79,9 +77,7 @@ def pemberian_beasiswa():
     workbook.save(FILE_NAME)
     print("Beasiswa berhasil diberikan.")
 
-# =============================
 #   PENCABUTAN BEASISWA
-# =============================
 def pencabutan_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
@@ -139,9 +135,7 @@ def pencabutan_beasiswa():
     workbook.save(FILE_NAME)
     print("Pencabutan beasiswa berhasil.")
 
-# =============================
 #   TAMPIL PEMBERIAN
-# =============================
 def tampil_data_pemberian():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -155,17 +149,13 @@ def tampil_data_pemberian():
 
     sheet = workbook['Pemberian']
 
-    print("\nDATA PEMBERIAN BEASISWA")
+    print("\n=== Data Pemberian Beasiswa ===")
+    print("{:<15} {:<20} {:<15} {:<15}".format("NISN","Nama Siswa","Kode Beasiswa","Tanggal"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        print("NISN :", row[0])
-        print("Kode Beasiswa :", row[1])
-        print("Tanggal :", row[2])
-        print()
+        print("{:<15} {:<20} {:<15} {:<15}".format(*row))
 
-# =============================
 #   TAMPIL HISTORI PENCABUTAN
-# =============================
 def tampil_history_pencabutan():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -179,13 +169,11 @@ def tampil_history_pencabutan():
 
     sheet = workbook['Histori_Pencabutan']
 
-    print("\nHISTORI PENCABUTAN BEASISWA")
+    print("\n=== History Pencabutan Beasiswa ===")
+    print("{:<15} {:<20} {:<15} {:<15}".format("NISN","Nama Siswa","Kode Beasiswa","Tanggal Pencabutan"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        print("NISN :", row[0])
-        print("Kode Beasiswa :", row[1])
-        print("Tanggal Pencabutan :", row[2])
-        print()
+        print("{:<15} {:<20} {:<15} {:<15}".format(*row))
 
 #  MENU PEMBERIAN
 def menu_pemberian():
