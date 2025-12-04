@@ -148,7 +148,7 @@ def tampil_data_pemberian():
 
     sheet = workbook['Pemberian']
 
-    print("\nData Pemberian Beasiswa")
+    print("\n=== Data Pemberian Beasiswa ===")
     print("{:<15} {:<20} {:<15}".format("NISN", "Kode Beasiswa", "Tanggal"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
@@ -168,7 +168,7 @@ def tampil_history_pencabutan():
 
     sheet = workbook['Histori_Pencabutan']
 
-    print("\nHistori Pencabutan Beasiswa")
+    print("\n=== Histori Pencabutan Beasiswa ===")
     print("{:<15} {:<20} {:<15}".format("NISN", "Kode Beasiswa", "Tanggal"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
@@ -177,7 +177,7 @@ def tampil_history_pencabutan():
 #   MENU PEMBERIAN
 def menu_pemberian():
     while True:
-        print("\nMenu Pemberian Beasiswa")
+        print("\n=== Menu Pemberian Beasiswa ===")
         print("1. Tambahkan Pemberian Beasiswa")
         print("2. Tampilkan Pemberian Beasiswa")
         print("3. Cabut Pemberian Beasiswa")
