@@ -41,7 +41,7 @@ def pemberian_beasiswa():
     # Validasi beasiswa
     bea_row = None
     for row in bea_sheet.iter_rows(min_row=2):
-        if row[0].value == kode:
+        if str (row[0].value).upper() == kode:
             bea_row = row
             break
 
