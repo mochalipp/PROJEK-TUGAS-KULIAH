@@ -53,7 +53,7 @@ def pemberian_beasiswa():
         print("Kuota beasiswa habis.")
         return
 
-    # Buat sheet pemberian jika belum ada
+    # Sheet pemberian
     pemberian_sheet = create_sheet_if_not_exists(
         workbook, 
         'Pemberian', 
@@ -110,20 +110,19 @@ def pencabutan_beasiswa():
         print("Data pemberian tidak ditemukan.")
         return
 
-    # Hapus entry pemberian
+    # Hapus baris pemberian
     row_number = target_row[0].row
     pemberian_sheet.delete_rows(row_number)
 
-    # Kembalikan kuota beasiswa
+    # Kembalikan kuota
     for row in bea_sheet.iter_rows(min_row=2):
         if row[0].value == kode:
             kuota = int(row[5].value)
-            kuota += 1
-            row[5].value = kuota
+            row[5].value = kuota + 1
             row[6].value = "Tersedia"
             break
 
-    # Catat ke histori
+    # Tambah ke histori
     histori_sheet = create_sheet_if_not_exists(
         workbook,
         'Histori_Pencabutan',
@@ -135,7 +134,7 @@ def pencabutan_beasiswa():
     workbook.save(FILE_NAME)
     print("Pencabutan beasiswa berhasil.")
 
-#   TAMPIL PEMBERIAN
+#   TAMPIL DATA PEMBERIAN
 def tampil_data_pemberian():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -149,11 +148,11 @@ def tampil_data_pemberian():
 
     sheet = workbook['Pemberian']
 
-    print("\n=== Data Pemberian Beasiswa ===")
-    print("{:<15} {:<20} {:<15} {:<15}".format("NISN","Nama Siswa","Kode Beasiswa","Tanggal"))
+    print("\nData Pemberian Beasiswa")
+    print("{:<15} {:<20} {:<15}".format("NISN", "Kode Beasiswa", "Tanggal"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        print("{:<15} {:<20} {:<15} {:<15}".format(*row))
+        print("{:<15} {:<20} {:<15}".format(*row))
 
 #   TAMPIL HISTORI PENCABUTAN
 def tampil_history_pencabutan():
@@ -169,20 +168,20 @@ def tampil_history_pencabutan():
 
     sheet = workbook['Histori_Pencabutan']
 
-    print("\n=== History Pencabutan Beasiswa ===")
-    print("{:<15} {:<20} {:<15} {:<15}".format("NISN","Nama Siswa","Kode Beasiswa","Tanggal Pencabutan"))
+    print("\nHistori Pencabutan Beasiswa")
+    print("{:<15} {:<20} {:<15}".format("NISN", "Kode Beasiswa", "Tanggal"))
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        print("{:<15} {:<20} {:<15} {:<15}".format(*row))
+        print("{:<15} {:<20} {:<15}".format(*row))
 
-#  MENU PEMBERIAN
+#   MENU PEMBERIAN
 def menu_pemberian():
     while True:
-        print("\n=== MENU PEMBERIAN BEASISWA ===")
+        print("\nMenu Pemberian Beasiswa")
         print("1. Tambahkan Pemberian Beasiswa")
         print("2. Tampilkan Pemberian Beasiswa")
         print("3. Cabut Pemberian Beasiswa")
-        print("4. Tampilkan History Pencabutan")
+        print("4. Tampilkan Histori Pencabutan")
         print("5. Kembali ke Menu Utama")
 
         pilihan = input("Pilih menu: ")
