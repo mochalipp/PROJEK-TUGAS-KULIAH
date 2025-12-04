@@ -11,18 +11,26 @@ def create_sheet_if_not_exists(workbook, sheet_name, header=None):
             sheet.append(header)
     return workbook[sheet_name]
 
-#   PEMBERIAN BEASISWA
+#FUNGSI PEMBERIAN BEASISWA
 def pemberian_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
     tanggal = datetime.today().strftime("%Y-%m-%d")
-
+    
+    # Validasi input jika user meninputkan kode tidak alfanumerik dengan huruf kapital.
+    if not kode.isalnum() or not any(kode.isupper() for kode in kode):
+        print("Kode beasiswa harus alfanumerik dengan huruf kapital.")
+    else : 
+        print("Kode beasiswa tidak valid.")
+    # Cek keberadaan file pada Excel pada Workbook 
     if not os.path.exists(FILE_NAME):
         print("File data tidak ditemukan.")
         return
-
+    
+    # Load workbook untuk validasi data siswa dan beasiswa
     workbook = openpyxl.load_workbook(FILE_NAME)
 
+    # Cek keberadaan sheet Siswa dan Beasiswa jika tidak ada maka tampilkan pesan
     if 'Siswa' not in workbook.sheetnames or 'Beasiswa' not in workbook.sheetnames:
         print("Data siswa atau beasiswa tidak ada.")
         return
@@ -30,19 +38,20 @@ def pemberian_beasiswa():
     siswa_sheet = workbook['Siswa']
     bea_sheet = workbook['Beasiswa']
 
-    # Validasi siswa
+    # Validasi siswa untuk memastikan NISN terdaftar pada didalam sheet Siswa
     siswa_valid = any(row[0].value == nisn for row in siswa_sheet.iter_rows(min_row=2))
     if not siswa_valid:
         print("Siswa tidak terdaftar.")
         return
 
-    # Validasi beasiswa
+    # Validasi beasiswa dan kuota beasiswa tersedia atau tidak 
     bea_row = None
     for row in bea_sheet.iter_rows(min_row=2):
         if row[0].value == kode:
             bea_row = row
             break
-
+    
+    # Jika beasiswa tidak ditemukan pada row maka tampilkan pesan
     if bea_row is None:
         print("Beasiswa tidak ditemukan.")
         return
@@ -53,20 +62,20 @@ def pemberian_beasiswa():
         print("Kuota beasiswa habis.")
         return
 
-    # Sheet pemberian
+    # Sheet pemberian beasiswa lalu dibuat jika belum ada dalam workbook
     pemberian_sheet = create_sheet_if_not_exists(
         workbook, 
         'Pemberian', 
         ['NISN', 'Kode Beasiswa', 'Tanggal']
     )
 
-    # Cek duplikasi
+    # Cek duplikasi pemberian beasiswa dan tampilkan pesan jika sudah pernah diberikan sebelumnya 
     for row in pemberian_sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == nisn and row[1] == kode:
             print("Siswa sudah pernah menerima beasiswa ini.")
             return
 
-    # Simpan data
+    # Simpan data pada sheet pemberian beasiswa
     pemberian_sheet.append([nisn, kode, tanggal])
 
     # Kurangi kuota
@@ -77,7 +86,7 @@ def pemberian_beasiswa():
     workbook.save(FILE_NAME)
     print("Beasiswa berhasil diberikan.")
 
-#   PENCABUTAN BEASISWA
+#FUNGSI PENCABUTAN BEASISWA 
 def pencabutan_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
     kode = input("Masukkan Kode Beasiswa: ")
@@ -125,7 +134,7 @@ def pencabutan_beasiswa():
     # Tambah ke histori
     histori_sheet = create_sheet_if_not_exists(
         workbook,
-        'Histori_Pencabutan',
+        'Pencabutan',
         ['NISN', 'Kode Beasiswa', 'Tanggal Pencabutan']
     )
 
@@ -134,7 +143,7 @@ def pencabutan_beasiswa():
     workbook.save(FILE_NAME)
     print("Pencabutan beasiswa berhasil.")
 
-#   TAMPIL DATA PEMBERIAN
+#FUNGSI TAMPIL DATA PEMBERIAN
 def tampil_data_pemberian():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -154,7 +163,7 @@ def tampil_data_pemberian():
     for row in sheet.iter_rows(min_row=2, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
 
-#   TAMPIL HISTORI PENCABUTAN
+#FUNSGSI TAMPIL HISTORI PENCABUTAN
 def tampil_history_pencabutan():
     if not os.path.exists(FILE_NAME):
         print("File tidak ditemukan.")
@@ -174,7 +183,7 @@ def tampil_history_pencabutan():
     for row in sheet.iter_rows(min_row=2, values_only=True):
         print("{:<15} {:<20} {:<15}".format(*row))
 
-#   MENU PEMBERIAN
+#FUNGSI MENU PEMBERIAN
 def menu_pemberian():
     while True:
         print("\n=== Menu Pemberian Beasiswa ===")
