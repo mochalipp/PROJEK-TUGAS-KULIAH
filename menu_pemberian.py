@@ -17,15 +17,11 @@ def pemberian_beasiswa():
     kode = input("Masukkan Kode Beasiswa: ")
     tanggal = datetime.today().strftime("%Y-%m-%d")
     
-    # Validasi input jika user meninputkan kode tidak alfanumerik dengan huruf kapital.
-    if not kode.isalnum() or not any(kode.isupper() for kode in kode):
-        print("Kode beasiswa harus alfanumerik dengan huruf kapital.")
-    else : 
-        print("Kode beasiswa tidak valid.")
+
     # Cek keberadaan file pada Excel pada Workbook 
     if not os.path.exists(FILE_NAME):
         print("File data tidak ditemukan.")
-        return
+        return 
     
     # Load workbook untuk validasi data siswa dan beasiswa
     workbook = openpyxl.load_workbook(FILE_NAME)
@@ -55,13 +51,13 @@ def pemberian_beasiswa():
     if bea_row is None:
         print("Beasiswa tidak ditemukan.")
         return
-
+    
     kuota = int(bea_row[5].value)
-
+    
     if kuota <= 0:
         print("Kuota beasiswa habis.")
         return
-
+    
     # Sheet pemberian beasiswa lalu dibuat jika belum ada dalam workbook
     pemberian_sheet = create_sheet_if_not_exists(
         workbook, 
@@ -89,7 +85,7 @@ def pemberian_beasiswa():
 #FUNGSI PENCABUTAN BEASISWA 
 def pencabutan_beasiswa():
     nisn = input("Masukkan NISN Siswa: ")
-    kode = input("Masukkan Kode Beasiswa: ")
+    kode = input("Masukkan Kode Beasiswa: ").upper()
 
     if not os.path.exists(FILE_NAME):
         print("File data tidak ditemukan.")
